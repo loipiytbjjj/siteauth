@@ -1,65 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Connexion Discord</title>
-</head>
-<body style="text-align:center; padding-top: 100px; font-family: sans-serif;">
-  <h1>Authentification Discord</h1>
-  <p>Clique ci-dessous pour te connecter avec Discord.</p>
-  <a href="https://discord.com/oauth2/authorize?client_id=TON_CLIENT_ID&redirect_uri=https%3A%2F%2Ftonpseudo.github.io/auth-site/&response_type=token&scope=identify%20guilds.join">
-    <button style="padding: 10px 20px; font-size: 18px;">Se connecter</button>
-  </a>
-
-  <div id="status" style="margin-top: 20px;"></div>
-
-  <script>
-    function getAccessTokenFromUrl() {
-      const hash = window.location.hash;
-      const params = new URLSearchParams(hash.slice(1));
-      return {
-        access_token: params.get('access_token'),
-        token_type: params.get('token_type'),
-        expires_in: params.get('expires_in')
-      };
-    }
-
-    async function fetchUserData(token) {
-      const res = await fetch('https://discord.com/api/users/@me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error("Impossible de récupérer l'utilisateur");
-      return res.json();
-    }
-
-    async function sendToBackend(user, token) {
-      const res = await fetch('https://ton-backend.com/save-auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: user.id,
-          username: user.username,
-          access_token: token
-        })
-      });
-      return res.ok;
-    }
-
-    (async () => {
-      const data = getAccessTokenFromUrl();
-      if (data.access_token) {
-        document.getElementById("status").textContent = "Authentification en cours...";
-        try {
-          const user = await fetchUserData(data.access_token);
-          const success = await sendToBackend(user, data.access_token);
-          document.getElementById("status").textContent = success
-            ? "✅ Authentification réussie ! Tu peux maintenant fermer cette page."
-            : "❌ Erreur lors de l'envoi au serveur.";
-        } catch (e) {
-          document.getElementById("status").textContent = "❌ Erreur : " + e.message;
-        }
-      }
-    })();
-  </script>
-</body>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Bienvenue !</title>
+  </head>
+  <body style="text-align:center; margin-top: 100px; font-family: sans-serif;">
+    <h1>✅ Authentification réussie !</h1>
+    <p>Tu peux fermer cette page.</p>
+  </body>
 </html>
